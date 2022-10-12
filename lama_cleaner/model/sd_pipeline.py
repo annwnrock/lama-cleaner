@@ -215,7 +215,7 @@ class StableDiffusionInpaintPipeline(DiffusionPipeline):
         mask = torch.cat([mask] * batch_size)
 
         # check sizes
-        if not mask.shape == init_latents.shape:
+        if mask.shape != init_latents.shape:
             raise ValueError("The mask and init_image should be the same size!")
 
         # get the original timestep using init_timestep
@@ -304,7 +304,10 @@ class StableDiffusionInpaintPipeline(DiffusionPipeline):
         if output_type == "pil":
             image = self.numpy_to_pil(image)
 
-        if not return_dict:
-            return (image, has_nsfw_concept)
-
-        return StableDiffusionPipelineOutput(images=image, nsfw_content_detected=has_nsfw_concept)
+        return (
+            StableDiffusionPipelineOutput(
+                images=image, nsfw_content_detected=has_nsfw_concept
+            )
+            if return_dict
+            else (image, has_nsfw_concept)
+        )
