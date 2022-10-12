@@ -99,11 +99,7 @@ def process():
 
     form = request.form
     size_limit: Union[int, str] = form.get("sizeLimit", "1080")
-    if size_limit == "Original":
-        size_limit = max(image.shape)
-    else:
-        size_limit = int(size_limit)
-
+    size_limit = max(image.shape) if size_limit == "Original" else int(size_limit)
     config = Config(
         ldm_steps=form["ldmSteps"],
         ldm_sampler=form["ldmSampler"],
@@ -195,17 +191,16 @@ def index():
 
 @app.route("/inputimage")
 def set_input_photo():
-    if input_image_path:
-        with open(input_image_path, "rb") as f:
-            image_in_bytes = f.read()
-        return send_file(
-            input_image_path,
-            as_attachment=True,
-            attachment_filename=Path(input_image_path).name,
-            mimetype=f"image/{get_image_ext(image_in_bytes)}",
-        )
-    else:
+    if not input_image_path:
         return "No Input Image"
+    with open(input_image_path, "rb") as f:
+        image_in_bytes = f.read()
+    return send_file(
+        input_image_path,
+        as_attachment=True,
+        attachment_filename=Path(input_image_path).name,
+        mimetype=f"image/{get_image_ext(image_in_bytes)}",
+    )
 
 
 def main(args):

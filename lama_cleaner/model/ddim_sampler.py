@@ -113,10 +113,11 @@ class DDIMSampler(object):
         )
 
         time_range = (
-            reversed(range(0, timesteps))
+            reversed(range(timesteps))
             if ddim_use_original_steps
             else np.flip(timesteps)
         )
+
         total_steps = timesteps if ddim_use_original_steps else timesteps.shape[0]
         logger.info(f"Running DDIM Sampling with {total_steps} timesteps")
 

@@ -73,10 +73,11 @@ class SD(InpaintModel):
         model_kwargs = {"local_files_only": kwargs['sd_run_local']}
         if kwargs['sd_disable_nsfw']:
             logger.info("Disable Stable Diffusion Model NSFW checker")
-            model_kwargs.update(dict(
+            model_kwargs |= dict(
                 feature_extractor=DummyFeatureExtractor(),
                 safety_checker=DummySafetyChecker(),
-            ))
+            )
+
 
         self.model = StableDiffusionInpaintPipeline.from_pretrained(
             self.model_id_or_path,
